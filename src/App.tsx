@@ -14,6 +14,7 @@ import { Dashboard } from "./pages/Admin/Dashboard";
 import { ManagePages } from "./pages/Admin/ManagePages";
 import { ManageNews } from "./pages/Admin/ManageNews";
 import { Settings } from "./pages/Admin/Settings";
+import { NotFound } from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
           <Route path="noticias" element={<NewsList />} />
           <Route path="noticias/:slug" element={<NewsDetail />} />
           <Route path="p/:slug" element={<Page />} />
+          <Route path="a" element={<Navigate to="/admin" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Admin Routes */}
@@ -34,6 +37,7 @@ export default function App() {
           <Route path="paginas" element={<ManagePages />} />
           <Route path="noticias" element={<ManageNews />} />
           <Route path="configuracion" element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -5,6 +5,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = 3000;
 const db = new Database('cms.db');
@@ -68,6 +72,11 @@ async function startServer() {
   
   // Serve uploaded files
   app.use('/uploads', express.static(uploadsDir));
+
+  // Redirect /a to /admin
+  app.get('/a', (req, res) => {
+    res.redirect('/admin');
+  });
 
   // --- API Routes ---
 
