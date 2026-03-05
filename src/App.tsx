@@ -13,6 +13,8 @@ import { NewsDetail } from "./pages/NewsDetail";
 import { Dashboard } from "./pages/Admin/Dashboard";
 import { ManagePages } from "./pages/Admin/ManagePages";
 import { ManageNews } from "./pages/Admin/ManageNews";
+import { ManageUsers } from "./pages/Admin/ManageUsers";
+import { FileManager } from "./pages/Admin/FileManager";
 import { Settings } from "./pages/Admin/Settings";
 import { NotFound } from "./pages/NotFound";
 
@@ -36,6 +38,8 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="paginas" element={<ManagePages />} />
           <Route path="noticias" element={<ManageNews />} />
+          <Route path="usuarios" element={<ManageUsers />} />
+          <Route path="archivos" element={<FileManager />} />
           <Route path="configuracion" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Route>

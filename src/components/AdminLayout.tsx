@@ -6,6 +6,8 @@ import {
   Settings,
   LogOut,
   Home,
+  Users,
+  FolderOpen,
 } from "lucide-react";
 
 export function AdminLayout() {
@@ -15,6 +17,8 @@ export function AdminLayout() {
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Páginas", path: "/admin/paginas", icon: FileText },
     { name: "Noticias", path: "/admin/noticias", icon: Newspaper },
+    { name: "Usuarios", path: "/admin/usuarios", icon: Users },
+    { name: "Archivos", path: "/admin/archivos", icon: FolderOpen },
     { name: "Configuración", path: "/admin/configuracion", icon: Settings },
   ];
 

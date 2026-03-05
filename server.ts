@@ -36,6 +36,14 @@ db.exec(`
     key TEXT PRIMARY KEY,
     value TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    role TEXT DEFAULT 'editor',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Insert default settings if not exist
@@ -192,6 +200,65 @@ async function startServer() {
       res.json({ url: `/uploads/${req.file.filename}` });
     } else {
       res.status(400).json({ error: 'No se subió ningún archivo' });
+    }
+  });
+
+  // Users API
+  app.get('/api/users', (req, res) => {
+    const users = db.prepare('SELECT * FROM users ORDER BY created_at DESC').all();
+    res.json(users);
+  });
+
+  app.post('/api/users', (req, res) => {
+    const { name, email, role } = req.body;
+    try {
+      const result = db.prepare('INSERT INTO users (name, email, role) VALUES (?, ?, ?)').run(name, email, role || 'editor');
+      res.json({ id: result.lastInsertRowid, name, email, role });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.put('/api/users/:id', (req, res) => {
+    const { name, email, role } = req.body;
+    try {
+      db.prepare('UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?').run(name, email, role, req.params.id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.delete('/api/users/:id', (req, res) => {
+    db.prepare('DELETE FROM users WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  });
+
+  // Files API
+  app.get('/api/files', (req, res) => {
+    fs.readdir(uploadsDir, (err, files) => {
+      if (err) return res.status(500).json({ error: 'Error al leer archivos' });
+      
+      const fileList = files.map(file => {
+        const stats = fs.statSync(path.join(uploadsDir, file));
+        return {
+          name: file,
+          url: `/uploads/${file}`,
+          size: stats.size,
+          createdAt: stats.birthtime
+        };
+      });
+      res.json(fileList);
+    });
+  });
+
+  app.delete('/api/files/:name', (req, res) => {
+    const filePath = path.join(uploadsDir, req.params.name);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Archivo no encontrado' });
     }
   });
 
